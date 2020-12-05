@@ -1,0 +1,21 @@
+Package: e1072
+Title: Misc Functions of the Department of Statistics, Probability
+        Theory Group (Formerly: E1072), TU Wien
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "David", family = "Meyer", role = c("aut", "cre"), email = "David.Meyer@R-project.org"),
+             person(given = "Evgenia", family = "Dimitriadou", role = c("aut","cph")),
+             person(given = "Kurt", family = "Hornik", role = "aut"),
+             person(given = "Andreas", family = "Weingessel", role = "aut"),
+             person(given = "Friedrich", family = "Leisch", role = "aut"),
+             person(given = "Chih-Chung", family = "Chang", role = c("ctb","cph"), comment = "libsvm C++-code"),
+             person(given = "Chih-Chen", family = "Lin", role = c("ctb","cph"), comment = "libsvm C++-code"))
+Description: Functions for latent class analysis, short time Fourier
+	     transform, fuzzy clustering, support vector machines,
+	     shortest path computation, bagged clustering, naive Bayes
+	     classifier, ...
+License: GPL-2 | GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
