@@ -25,7 +25,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
  \item{sig.level}{a logical value indicating whether centered moments are
    to be computed.}
  \item{power}{Power of test (1 minus Type II error probability)}
-  \item{type}{Type of t test : one- two- or paired-samples}
+ \item{type}{Type of t test : one- two- or paired-samples}
  \item{alternative}{a character string specifying the alternative hypothesis, must be one of "two.sided" (default), "greater" or "less"}
 }
 \details{
