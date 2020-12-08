@@ -18,7 +18,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
  \item{absolute}{a logical value indicating whether absolute moments are
    to be computed.}
  \item{na.rm}{a logical value indicating whether \code{NA} values
-   should be stripped before the computation proceeds.
+   should be stripped before the computation proceeds.}
   \item{x}{a numeric vector containing the values whose moment is to be
    computed.}
  \item{order}{order of the moment to be computed, the default is to
@@ -28,7 +28,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
  \item{absolute}{a logical value indicating whether absolute moments are
    to be computed.}
  \item{na.rm}{a logical value indicating whether \code{NA} values
-   should be stripped before the computation proceeds.
+   should be stripped before the computation proceeds.}
   \item{x}{a numeric vector containing the values whose moment is to be
    computed.}
  \item{order}{order of the moment to be computed, the default is to
