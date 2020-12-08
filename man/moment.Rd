@@ -19,7 +19,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
    to be computed.}
  \item{na.rm}{a logical value indicating whether \code{NA} values
    should be stripped before the computation proceeds.}
-  \item{n}{a numeric vector containing the values whose moment is to be
+ \item{n}{a numeric vector containing the values whose moment is to be
    computed.}
  \item{d}{Effect size (Cohen's d) - difference between the means divided by the pooled standard deviation}
  \item{sig.level}{a logical value indicating whether centered moments are
