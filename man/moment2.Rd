@@ -40,255 +40,6 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
 \examples{
 x <- rnorm(100)
 
-## Compute the mean test123
-moment(x)
-## Compute the 2nd centered moment (!= var)
-moment(x, order=2, center=TRUE)
-
-## Compute the 3rd absolute centered moment
-moment(x, order=3, center=TRUE, absolute=TRUE)
-
-# NOT RUN {
-## Exercise 9.1 P. 424 from Cohen (1988)
-pwr.f2.test(u=5,v=89,f2=0.1/(1-0.1),sig.level=0.05)
-# }
-
-# NOT RUN {
-## One sample (power)
-## Exercise 2.5 p. 47 from Cohen (1988)
-pwr.t.test(d=0.2,n=60,sig.level=0.10,type="one.sample",alternative="two.sided")
-
-## Paired samples (power)
-## Exercise p. 50 from Cohen (1988)
-d<-8/(16*sqrt(2*(1-0.6)))
-pwr.t.test(d=d,n=40,sig.level=0.05,type="paired",alternative="two.sided")
-
-## Two independent samples (power)
-## Exercise 2.1 p. 40 from Cohen (1988)
-d<-2/2.8
-pwr.t.test(d=d,n=30,sig.level=0.05,type="two.sample",alternative="two.sided")
-
-## Two independent samples (sample size)
-## Exercise 2.10 p. 59
-pwr.t.test(d=0.3,power=0.75,sig.level=0.05,type="two.sample",alternative="greater")
-
-# }
-
-
-##read
-data = read.delim("data.csv",header = T,dec=".", sep = ";")
-
-#Check NA
-apply(data,2,function(x){sum(is.na(x))})
-
-#Plot
-plot(data,main = "Data", xlab = "data",ylab = "value")
-
-plot(density(data),main = "Data",xlab = "value",ylab = "density",lwd = 2)
-lines(seq(min(data),max(data),0.01),dnorm(seq(min(data),max(data),0.01),mean = mean(data),sd=sd(data)),col="blue",lwd = 2,lty = 'dotted')
-
-boxplot(data,main = "Data",ylab = "values",notch = T)
-
-ggqqplot(data,main = "Data")
-gridExtra::grid.arrange(qq1,qq2,nrow=2)
-
-#DOE
-pairs(data)
-scatterplotMatrix(data)
-interaction.plot(data$factor1, data$factor2, data$measured))
-#DOE Char val.
-data %>% group_by(factor1,factor2) %>% summarize(mean_factors = mean(measured),sd_factors = sd(measured))
-
-#lm
-model1 = lm(m~.^2 ,data=data3)
-mod = lm(measured~.^3+I(factor1^2)+I(factor2^2)+I(factor3^2)+I(factor3^2)+I(factor2*factor1^2)+I(factor3*factor1^2)+I(factor1*factor2^2)+I(factor3*factor2^2)+I(factor1*factor3^2)+I(factor2*factor3^2) ,data=data)
-summary(mod)
-anova(mod,mod_old)
-
-#Parabula
-mod=lm(measured~ poly(factor1, degree = 2,raw=T),data=data)
-summary(mod)
-
-#Opt Model
-stepm <- stepAIC(model1, direction="both")
-stepm$anova
-
-#Resid. Homogenous
-par(mfrow = c(1,2))
-plot(mod,which=1)
-plot(mod,which=3)
-ncvTest(mod)
-mod_r2=summary(mod)$r.squared
-
-#Power of lm
-f=mod_r2/(1-mod_r2)
-uf=1
-sig=0.01
-p=0.99
-f2_res=pwr.f2.test(u=uf,v=NULL,f2=f,sig.level=sig,power=p)
-n=f2_res$v+uf+1
-
-#Cooks leverage
-par(mfrow = c(1,2))
-plot(mod,which=4)
-plot(mod,which=6)
-cd1c=4/length(mod$residuals)
-cd1=abs(cooks.distance(mod))
-subset(cd1, cd1 > cd1c)
-
-MEPlot(mod)
-IAPlot(mod)
-
-#Normality
-shapiro.test(data)
-
-#Outlier
-rosnerTest(data, k = 2, alpha = 0.05, warn = T)
-
-#Box Cox
-data=data-min(data)+1
-x=powerTransform(data, family="bcPower")
-transData=bcPower(data,lambda=x$lambda)
-
-#Characteristic Val.
-values1=c(mean(s1),median(s1),sd(s1),mad(s1),min(s1),quantile(s1,0.25),quantile(s1,0.75),max(s1),skewness(s1),mc(s1),kurtosis(s1))
-values2=c(mean(s2),median(s2),sd(s2),mad(s2),min(s2),quantile(s2,0.25),quantile(s2,0.75),max(s2),skewness(s2),mc(s2),kurtosis(s2))
-values3=c(mean(s3),median(s3),sd(s3),mad(s3),min(s3),quantile(s3,0.25),quantile(s3,0.75),max(s3),skewness(s3),mc(s3),kurtosis(s3))
-values4=c(mean(s4),median(s4),sd(s4),mad(s4),min(s4),quantile(s4,0.25),quantile(s4,0.75),max(s4),skewness(s4),mc(s4),kurtosis(s4))
-column.names <- c("mean","median","$\\sigma$","MAD","Min","Q1","Q3","Max","skewness","Medcouple","kurtosis")
-row.names <- c("s1","s2","s3","s4")
-results = array(rbind(values1,values2,values3,values4),dim = c(4,11),dimnames = list(row.names,column.names))
-kable(results)
-
-#FWHM
-d <- density(data)
-xmax <- d$x[d$y==max(d$y)]
-x1 <- d$x[d$x < xmax][which.min(abs(d$y[d$x < xmax]-max(d$y)/2))]
-x2 <- d$x[d$x > xmax][which.min(abs(d$y[d$x > xmax]-max(d$y)/2))]
-fwhm=x2-x1
-
-
-
-#Plan
-set.seed(1234) # set the seed for the random numbers
-f <- factor(seq(1,5,4/(n-1))) # generate vector of factor levels
-fac <- sample(f,7) # radomize the order of levels
-plan <- data.frame(level =fac) # create a data frames with all experiments
-
-#Plan with continuous factor
-nparam <- 3
-levels <- seq(1000,1500,(1500-1000)/(nparam-1))
-lvlsamp <- sample(levels,nparam)#Randomize
-plan <- data.frame(parameter=lvlsamp)
-#Write matr number
-write.table(1, file="plan1.csv", sep=";", dec=".", row.names=F, col.names=F,append=F)
-#write Testplan
-write.table(plan, file="plan1.csv", sep=";", dec=".", row.names=F, col.names=T,append=T)
-#find optimum with parabula
-mod1=lm(measured~poly(parameter, degree=2, raw=T),data=data71)
-x_max=as.double(-mod1$coefficients[2]/(2*mod1$coefficients[3]))
-
-#Plan DOE
-Var1=c(-1,1) # generate vector of factor1
-Var2=c(-1,1)  # generate vector of factor2
-Var3=c(-1,1) # generate vector of factor3
-plan=expand.grid(Var1,Var2,Var3)
-n_rep=4 # number of replicates
-planr=do.call("rbind", replicate(n_rep, plan, simplify=F))
-set.seed(1234) # set the seed for the random numbers
-plan_r=planr[order(sample(1:nrow(planr))),] #randomised design
-#Alternative Approach full factorial
-plan2 = fac.design(factor.names=list(Var1=c(-1,1), Var2=c(-1,1), Var3=c(-1,1)),replications=10,seed=1)
-
-
-
-
-
-#blocked design instead of full factorial
-plan3=fac.design(factor.names=list(temp=c(160,170), pres=c(700,800)),replications =3 , blocks=2, randomize = T, block.name = "Tech")
-plan3=subset(plan3, select = -c(Blocks) ) # drop the not needed Blocks column
-ma<- rep( 1 , times=length(plan3[,1])) # generate a vector with machine number
-plan3a=cbind(ma,plan3)
-matrnb=1
-# First line writes the Matrikelnummer
-write.table(matrnb,file="plan.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
-# Second line writes the Testplan
-write.table(plan1,file="plan.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
-data=read.delim("plan.csv",header = T,dec=".", sep = ";")
-data=transform(data,ma=as.factor(ma)) # transform the machine number from a numerical to a factor!
-f=r2/(1-r2)
-uf=2
-f2_res=pwr.f2.test(u=uf,v=NULL,f2=f,sig.level=0.01,power=0.99)
-n=ceiling(f2_res$v+uf+1)
-
-ma=c(1,2)
-ts=c(4000,6000)
-fr=c(0.001,0.003)
-plan2=expand.grid(ma,ts,fr)
-# plan2=rbind(plan2,plan2,plan2,plan2,plan2,plan2) # 6 replicates
-plan2=do.call("rbind", replicate(n2, plan2, simplify=F)) # better programming than the line before
-names(plan2)<- c("ma","ts","fr") # to names the variables
-set.seed(1234) # set seed for random number generator
-plan2=plan2[order(sample(1:nrow(plan2))),] # randomize design
-# Alternative
-plan2a=fac.design(factor.names=list(ma=c(1,2),ts=c(4000,6000), fr=c(0.001,0.003)),replications =n2 , randomize = T)
-plan2a=subset(plan2a, select = -c(Blocks) ) # drop the not needed Blocks column
-matrno=1
-# First line writes the Matrikelnummer
-write.table(matrno,file="plan2_73.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
-# Second line writes the Testplan
-write.table(plan2,file="plan2_73.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
-data73b=read.delim("plan2_73_res.csv",header = T,dec=".", sep = ";")
-data73b=transform(data73b,ma=as.factor(ma)) # transform the machine number from a numerical to a factor!
-head(data73b)
-
-
-
-
-#Block Design
-#Incomplete Blocked Design
-bs = 2 # Block size
-gw = 4 # number of factors
-bd=bibd(v=gw,k=bs)
-#Transform to Plan
-plan1=as.data.frame.model.matrix(bd)
-plan2=cbind(c(1:(length(bd)/2)),plan1)
-colnames(plan2)<-c("machine","run")
-data=transform(data,machine=as.factor(machine))
-
-
-#Testing
-#mean
-t.test(x=mach2,y=mach1, mu=.2*m1, alternative = "less",paired=F, conf.level = 0.95) #H0:(m2-m1)>=m1*0.2
-t.test(data, mu = 0.6 , conf.level = 0.95)
-#SD with F-Test
-var.test(data1,data2, conf.level = 0.95)
-#mean 3 samples Anova Welch for uneq. var
-dat=stack(data) # stack the data
-names(dat)=c("row","col") # row=values;col=set1,set2,set3
-oneway.test(row~col,var.equal="F")
-#SD 3 samples
-bartlett.test(data)
-#Wilcoxon non norm. distr test median 2 sample
-wilcox.test(weight ~ group, data = data, exact = FALSE, alternative = "two.sided")
-#Kruskal non norm. distr test median 3 sample
-kruskal.test(value ~ set, data = data)
-
-#Power
-d=(1.87-1.7)/(1.7*0.05)
-pwr.t.test(n=NULL,d=d, sig.level = 0.01, power = 0.99, type = "one.sample", alternative = "greater")
-OR pwr.anova.test(k=2, n = NULL,f=d, sig.level=.01, power = .90)
-#calc n of experiments with relative error/mean square
-rel_error=0.01
-n=(SD(data)/(rel_error*mean(Data)))^2
-#calc rel error
-rel_error=SD(data)/mean(data)/sqrt(nrow(data))
-
-#delta m
-np=size.t.test(type = 'one.sample', power = .95,delta=mean_old*0.2, sd=sd_old , sig.level=.05,alternative = "one.sided")
-#diff in variance with factor/ratio 2 betw variances
-n=size.comparing.variances(ratio=(0.1/0.05)^2,alpha=0.05,power=0.95)
-
 ## Compute the mean
 moment(x)
 ## Compute the 2nd centered moment (!= var)
@@ -297,44 +48,782 @@ moment(x, order=2, center=TRUE)
 ## Compute the 3rd absolute centered moment
 moment(x, order=3, center=TRUE, absolute=TRUE)
 
-# NOT RUN {
-## Exercise 9.1 P. 424 from Cohen (1988)
-pwr.f2.test(u=5,v=89,f2=0.1/(1-0.1),sig.level=0.05)
-# }
 
-## Compute the mean
-moment(x)
-## Compute the 2nd centered moment (!= var)
-moment(x, order=2, center=TRUE)
+###########1?
+## Generate Data
 
-## Compute the 3rd absolute centered moment
-moment(x, order=3, center=TRUE, absolute=TRUE)
+Task:\
 
-# NOT RUN {
-## Exercise 9.1 P. 424 from Cohen (1988)
-pwr.f2.test(u=5,v=89,f2=0.1/(1-0.1),sig.level=0.05)
-# }
+- You have seven machines for which you want to find out what they do. Write a test plan into a file
+(suggested replicates: 300).\
+- The file starts with the Matrikelnumber. This row is followed by a row with names with 1 column. 
+Names: ma. In the following rows follows the plan with the machines to be tested. There is always 1 
+column.\
+- Set up a test plan to investigate the machines and write the plan to a csv file.
+
+```{r}
+ma=seq(1,7)                                               # number of machines tested
+nr=300                                                    # number of replicates
+plan1=expand.grid(ma)                                     # generate a base (matrix with 7 rows with values 1 to 7)
+plan1=do.call("rbind", replicate(nr, plan1, simplify=F))  # replicate the base plan
+set.seed(1234)                                            # set seed for random number generator
+plan1=plan1[order(sample(1:nrow(plan1))),]                # randomize design
+plan1=as.data.frame(plan1)                                # make sure plan1 is dataframe
+names(plan1)<- c("ma")      
+```
+
+```{r}
+#alternative test plan
+plan1 <- tibble(ma = 1:7)
+#replicate 300x
+plan1 %>% slice(rep(1:n(), each = 300)) -> plan1
+#randomize row order
+set.seed(1234)
+plan1<-plan1[sample(nrow(plan1)),]
+# convert to dataframe
+plan1=as.data.frame(plan1) 
+```
+
+```{r}
+# save as csv
+# First line writes the Matrikelnummer
+write.table(matrikelnumber,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan1,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+## read test plan with results
+
+```{r}
+dat1=read.delim("plan1_res.csv",header = T,dec=".", sep = ";")
+dat1=transform(dat1,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor for categorical
+head(dat1)
+```
+
+## characteristic values
+```{r}
+summary_val <- dat1 %>% group_by(ma)%>% summarise( mean = mean(val), median = median(val), std_dev = sd(val), MAD =mad(val), skewness=skewness(val),medcouple= mc(val), kurtosis= kurtosis(val),min=min(val),q25=quantile(val,0.25),q75=quantile(val,0.75),max=max(val))
+
+summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+  kbl(.,"html",align = "r",caption = "Characteristic Value") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+
+- mean values seem to be very similar except for machine 6, the same applies for the standard deviation.\
+- Machine 6 has a much lower mean and standard deviation.\
+- Comparing the MAD with the standard deviation, there seems to be a larger difference for machine 6, the MAD is much lower than the standard deviation, so there seem to be some outliers.\
+- Skewness is near zero for machines 2,3 and 4 and machines 1,5,6 and 7 seem to be skewed.\
+- Comparing the medcouple (robust) with the skewness, the medcouple is closer to zero for all machines.\
+- Machine 1 and 6 still seem to be slightly skewed.\
+- Kurtosis shows a very high value for machine 6, as already expected from the standard deviation, the distribution seems to be peaky.\
+- Judging by Kurtosis, machines 3 and 4 seem to be close to a normal distribution.
+
+## visualize data
+
+### Scatterplot
+
+```{r fig.height=9}
+plots <- list()             # generate an empty list
+# run a loop to generate all scatter plots
+for(i in ma){
+  p = ggplot(data=filter(dat1,ma==i),aes(x=time,y=val)) +  geom_point() + ggtitle(paste("ma ",i)) + geom_smooth(method="auto", level=0.95)
+  plots[[i]] <- p
+}
+# display the scatterplots
+gridExtra::grid.arrange(grobs=plots,ncol=2)
+```
+
+- Machine 4 seems to have some positive drift over time.\
+- Machines 1, 3, 5, 6 ,7 seem to have some outliers but no discernable drift.
+
+### Density +Historgram + "theo. Dist."
+
+```{r fig.height=9}
+dplots <- list()             # generate an empty list
+# run a loop to generate all scatter plots
+for(i in ma){
+  dp = ggplot(data=filter(dat1,ma==i),aes(x=val))+geom_histogram(aes(y=..density..), binwidth=0.15,colour="black", fill="white")+geom_density() + ggtitle(paste("ma ",i)) + geom_rug(alpha = 1/5)
+  dplots[[i]] <- dp
+}
+# display the density plots
+gridExtra::grid.arrange(grobs=dplots,ncol=2)
+```
+
+- Machine 2 seems to be the sum of two distributions.\
+- Machines 1 and 7 seem to be skewed.\
+- Machine 6 is has a high peak and low standard deviation.
+
+### Box-Plot
+
+```{r}
+ggplot(data=dat1, aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5)
+```
+
+- Machine 1,5 and 7 seem to have outliers. Machine 2 has a wide distribution (because it is sum of two distributions).\
+- Machine 6 has a very low standard deviation and much lower mean than the other data sets.
+
+### Q-Q-Plot
+
+```{r fig.height=9}
+qqplots <- list()             # generate an empty list
+# run a loop to generate all scatter plots
+for(i in ma){
+  qqp = ggqqplot(data=filter(dat1,ma==i), x = "val") + ggtitle(paste("ma ",i))
+  qqplots[[i]] <- qqp
+}
+# display the density plots
+gridExtra::grid.arrange(grobs=qqplots,ncol=2)
+```
+
+- Machines 1,2,5,6 and 7 are not normal distributed.\
+- Machine 4 might not be normal distributed.
+
+## Statistical tests
+- Normality with Shapiro Wilk: H~0~ Distribution is normal distributed\
+- Stationary with KSPP test: H~0~ Distribution is stationary\
+- Outliers with Rosner test.\
+
+The significance level is set to  $\alpha = 0.05$
+
+```{r}
+summary_val <- dat1 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 20, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, family="bcPower")$lambda)
+summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+
+- normality: H~0~ has to be rejected for machine 1,2,5,6 and 7 ($p<\alpha$) and cannot be rejected for 3,4. Thus 3 and 4 could be normal distributed.\
+- stationary: H~0~ has to be rejected for machine 4 ($p<\alpha$) and cannot be rejected for the rest. Thus all machines except for machine 4 could be stationary.\
+- outliers: Machines 1, 5, 6, 7 seem to have outliers\
+- box cox: necessary power for transformation is about -2.1 for machine 1, -0.77 for machine  5, 0.55 for machine 6. and 3.2 for machine 7.
+
+
+#############2?
+#############2?
+
+
+Task:\
+
+- You have eight machines (ma) for which you want to find out what they do. All machines are of the 
+same kind and are supposed to do the very same, but the first four are of one brand (?? ? {1,2,3,4}) 
+and the other four are of the second brand (?? ? {5,6,7,8}).\
+- According to the different tasks write test plans into files.\
+- The files all start with the Matrikelnumber.\
+- This row is followed by a row with names with 1 column. Names: ma.\
+- In the following rows follows the plan with the machines to be tested.\
+- There is always 1 column. \
+- Set up a test plan to investigate the machines and write the plan to a csv file.\
+
+### Set up test plan
+
+```{r}
+#alternative test plan
+ma <- seq(1:8)
+plan1 <- tibble(ma = ma)
+#replicate
+plan1 %>% slice(rep(1:n(), each = 100)) -> plan1
+#randomize row order
+set.seed(1234)
+plan1<-plan1[sample(nrow(plan1)),]
+# convert to dataframe
+plan1=as.data.frame(plan1) 
+```
+
+```{r}
+# save as csv
+# First line writes the MatrikelnummerQ
+write.table(matrikelnumber,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan1,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+### read test plan with results
+```{r}
+dat1=read.delim("plan1_res.csv",header = T,dec=".", sep = ";")
+dat1=transform(dat1,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor for categorical
+head(dat1)
+```
+
+### Characterize all machines individually with the appropriate characteristic numbers, graphs and statistical tests. (100 replications should be appropriate.)
+```{r}
+summary_val <- dat1 %>% group_by(ma)%>% summarise( mean = mean(val), median = median(val), std_dev = sd(val), MAD =mad(val), skewness=skewness(val),medcouple= mc(val), kurtosis= kurtosis(val),min=min(val),q25=quantile(val,0.25),q75=quantile(val,0.75),max=max(val))
+
+summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+  kbl(.,"html",align = "r",caption = "Characteristic Value") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+For all machines the mean and median seems to be about the same.\
+Standard deviation and MAD also seem to be about the same except for a slight deviation for machine 1 and 5.\
+There seem to be some differences between skewness and medcouple for machines 5, 6, 7, 8\
+Kurtosis for machine 7 is quite high. The other machines seem to have a kurtosis close to 0.\
+
+### Visualize the datasets
+
+#### Scatterplot
+
+
+```{r fig.height=9}
+plots <- list()
+for(i in ma){
+  p = ggplot(data=filter(dat1,ma==i),mapping = aes(x=time,y=val)) +  geom_point() + ggtitle(paste("ma ",i))
+  plots[[i]] <- p
+}
+gridExtra::grid.arrange(grobs=plots,ncol=2)
+```
+Data looks unsuspicous. Machine 7 might have an outlier.
+
+#### Density plot
+
+```{r fig.height=9}
+dplots <- list()
+for(i in ma){
+  dp = ggplot(data=filter(dat1,ma==i),mapping = aes(x=val))+geom_histogram(aes(y=..density..), binwidth=0.3,colour="black", fill="white")+geom_density() +
+  stat_function(fun = dnorm, n = 101, args = list(mean = as.numeric(summary_val[i,2]), sd = as.numeric(summary_val[i,4])), colour = "red") + ggtitle(paste("ma ",i)) + geom_rug(alpha = 1/5)
+  dplots[[i]] <- dp
+}
+gridExtra::grid.arrange(grobs=dplots,ncol=2)
+```
+machine 7 seems to have an outlier. Other than that the data looks unsuspicious.
+
+#### Box-Plot
+
+```{r}
+ggplot(data=dat1,mapping = aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5) 
+```
+
+The machines could be all the same, but it is hard to tell.\
+There might be some outliers. Exspecially machine 7 seems to have one.\
+
+#### Q-Q-Plot
+
+```{r fig.height=9}
+qqplots <- list()
+for(i in ma){
+  qqp = ggqqplot(data=filter(dat1,ma==i), x = "val") + ggtitle(paste("ma ",i))
+  qqplots[[i]] <- qqp
+}
+gridExtra::grid.arrange(grobs=qqplots,ncol=2)
+```
+Machine 7 seems to have an outlier.\
+machines 1, 4, 5, 6 might not be normal distributed.\
+Other than that the data is unsuspicous.\
+
+### statistical tests before comparison of machines
+-test for normality: shapiro-wilk-test -> H~0~: distribution is normal distributed\
+-testing if stationary: KSPP test -> H~0~: distribution is stationary\
+-testing for outliers: Rosner test -> H~0~: there are no outliers in the distribution\
+-testing necessary power for Box Cox transformation to normal distribution -> powerTransform
+
+the significance level for all tests is set to alpha=5%\
+
+#### test for normality with shapiro-wilk-test
+
+```{r}
+summary_val <- dat1 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, family="bcPower")$lambda)
+summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+for machines 1,2,3,4,8 H~0~ for normal distribution cannot be rejected. They could be normal distirbuted.\
+machine 5 is very close to alpha value -> no clear decision regarding H~0~ can be made.\
+for machines 6 and 7 H~0~ can be rejected they don't seem to be normal distributed\
+\
+all distributions seem to stationary as p-value of KSPP is above alpha.\
+\
+only machine 7 seems to have one outlier.\
+\
+the power for Box-Cox-Transformation is close to 1 for machines 1 to 4. Machines 5 to 8 is close to zero and should be transformed to be closer to normal distribution.\
+
+
+###compare machines
+
+
+#### Do machines 1 and 2 have the same performance?
+
+##### graphcial
+
+One way of graphical comparison is the Box plot\
+
+```{r}
+ggplot(data=filter(dat1,ma==1 | ma==2), aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5)
+```
+
+Another way is to overlay the density plots.\
+
+```{r}
+ggplot(data=filter(dat1,ma==1 | ma==2),mapping = aes(x=val,color=ma)) + geom_density() + geom_rug()
+```
+##### hypothesis test
+
+H~0~ machines 1 and 2 have the same variance.\
+significance level $\alpha=5\%"\
+
+```{r}
+var.test(unlist(filter(dat1,ma==1)[3]), unlist(filter(dat1,ma==2)[3]))
+```
+
+
+
+The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The machine 1 and 2 seem to have the same variance.
+
+H~0~ machines 1 and 2 are the same.\
+significance level $\alpha=5\%"\
+
+```{r}
+t.test(filter(dat1,ma==1)[3], filter(dat1,ma==2)[3], conf.level = 0.95,var.equal =T)
+```
+
+The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The machine 1 and 2 seem to have the same performance.
+
+Alternative the Welch-Test
+
+H~0~ machines 1 and 2 are the same.\
+significance level alpha=5%\
+
+```{r}
+t.test(filter(dat1,ma==1)[3], filter(dat1,ma==2)[3], conf.level = 0.95,var.equal =F)
+```
+
+The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The machine 1 and 2 seem to have the same performance.
 
 
 
 
+### Do machines 5 and 6 have the same performance?
+```{r}
+ggplot(data=filter(dat1,ma==5 | ma==6), aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5)
+```
+Performance seems to be similar.\
+
+```{r}
+ggplot(data=filter(dat1,ma==1 | ma==2),mapping = aes(x=val,color=ma)) + geom_density() + geom_rug()
+```
+Densityplot confirms a very similar performance of the machines.\
+
+##### hypothesis test
+
+H~0~: machines 5 and 6 perform the same\
+
+sign. level: alpha=5%\
+
+wilcoxon test for non-parametric machine 5 and 6
+
+```{r}
+dat1s1=filter(dat1,ma==5 | ma==6)
+wilcox.test(dat1s1$val~dat1s1$ma, alternative = "two.sided",paired = F)
+```
+p-value of 0.45 is above set alpha -> H~0~ cannot be rejected\
+-> machines seem to have the same performance\
+
+### Do machines 1 to 3 have the same performance?
+
+```{r}
+ggplot(data=filter(dat1,ma==1 | ma==2 |ma==3), aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5)
+```
+
+there seems to be a slight difference in performance, though the standard deviation seems have a slight overlap\
+-> perform other tests for more certain analysis.\
 
 
+test variance for further analysis (3 data sets can be tested for the same variance with the bartlett test)
+
+H~0~ machines 1 to 3 have the same variance.\
+significance level $\alpha=5\%"\
+
+```{r}
+dat1s2=filter(dat1,ma==1 | ma==2| ma==3)
+bartlett.test(dat1s2$val~dat1s2$ma)
+```
+p-value is higher than alpha -> H~0~ cannot be rejected.\
+Datasets seem to have the same variance.\
+
+Perform Anova to test for same performance of more than 2 datasets with same variance
+H~0~: machines 1 to 3 perform the same\
+sign. level alpha=5%\
+
+```{r}
+res.aov<-aov(val~ma,data = dat1s2)
+summary(res.aov)
+```
+p-value of 0.00778 is below alpha value -> H~0~ rejected\
+-> machines don't seem to perform the same\
 
 
+### Do machines 5 to 7 have the same performance?
 
 
+```{r}
+ggplot(data=filter(dat1,ma==5 | ma==6 | ma==7), aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5)
+```
+
+Machine 7 might perform slightly better than the others, hard to tell as variance overlaps\
+
+testing 3 data sets at once for same performance requires the ANOVA test for parametric distributions (normal distr.)\
+In this case the datasets 6 and 7 are non-parametric -> Kruskal test 
+
+H~0~: machines 5, 6 and 7 perform the same\
+
+sign. level alpha=5%
+
+```{r}
+dat1s3=filter(dat1,ma==5 | ma==6 | ma==7)
+kruskal.test(val~ma,data = dat1s3)
+```
+p-value of test is higher than alpha value -> H~0~ cannot be rejected\
+-> machines 5 to 7 seem to perform the same\
+
+#############3?
+#############3?
+
+## Determine first machine's performance
+
+### Generate "Screening" Test plan
+```{r class.source = 'fold-show'}
+ma=seq(1)                                                 # number of machines tested
+nr=6                                                      # number of replicates
+plan1=expand.grid(ma)                                     # generate a base plan
+plan1=do.call("rbind", replicate(nr, plan1, simplify=F))  # replicate the base plan
+set.seed(1234)                                            # set seed for random number generator
+plan1=plan1[order(sample(1:nrow(plan1))),]                # randomize design
+plan1=as.data.frame(plan1)                                # make sure plan1 is dataframe
+names(plan1)<- c("ma")                                    # name the variables
+```
+
+### Write test plan
+```{r warning=F,class.source = 'fold-show'}
+# First line writes the Matrikelnummer
+write.table(matrikelnumber,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan1,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+### Read data
+```{r}
+dat1=read.delim("plan1_res.csv",header = T,dec=".", sep = ";")
+dat1=transform(dat1,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+head(dat1)
+```
+
+### Calculate number of runs
+```{r}
+me1=mean(filter(dat1,ma==1)$val) # calculate mean
+sd1=sd(filter(dat1,ma==1)$val) # calculate standard deviation
+nt=ceiling((sd1/me1/0.02)^2)
+```
+
+One needs `r nt` experiments.
+
+### Generate "Screening" Test plan
+```{r class.source = 'fold-show'}
+ma=seq(1)                                                 # number of machines tested
+nr=nt                                                      # number of replicates
+plan2=expand.grid(ma)                                     # generate a base plan
+plan2=do.call("rbind", replicate(nr, plan2, simplify=F))  # replicate the base plan
+set.seed(1234)                                            # set seed for random number generator
+plan2=plan2[order(sample(1:nrow(plan2))),]                # randomize design
+plan2=as.data.frame(plan2)                                # make sure plan1 is dataframe
+names(plan2)<- c("ma")                                    # name the variables
+```
+
+### Write test plan
+```{r warning=F,class.source = 'fold-show'}
+# First line writes the Matrikelnummer
+write.table(matrikelnumber,file="plan2.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan2,file="plan2.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+### Read data
+```{r}
+dat2=read.delim("plan2_res.csv",header = T,dec=".", sep = ";")
+dat2=transform(dat2,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+head(dat2)
+```
+
+### verify the result
+```{r}
+me2=mean(filter(dat2,ma==1)$val) # calculate mean
+sd2=sd(filter(dat2,ma==1)$val) # calculate standard deviation
+re2=(sd2/me2/sqrt(nrow(dat2)))
+re2
+```
+The achieved relative error `r re2` is below the goal of 2%.\
+
+## Compare machine 1 and 2
+
+start with an power analysis to determine the number of experiments needed.
+
+```{r}
+dm=me2*0.05/sd2
+nt2=ceiling(pwr.t.test(n=NULL,d=dm, sig.level = 0.05, power = 0.95, type = "two.sample", alternative = "two.sided")$n)
+nt2
+```
+There will `r nt2` data sets of each machine be needed.
+
+### Generate "Screening" Test plan
+```{r}
+ma=seq(1,2)                                               # number of machines tested
+nr=nt2                                                    # number of replicates
+plan3=expand.grid(ma)                                     # generate a base plan
+plan3=do.call("rbind", replicate(nr, plan3, simplify=F))  # replicate the base plan
+set.seed(1234)                                            # set seed for random number generator
+plan3=plan3[order(sample(1:nrow(plan3))),]                # randomize design
+plan3=as.data.frame(plan3)                                # make sure plan3 is dataframe
+names(plan3)<- c("ma")                                    # name the variables
+```
+
+### Write test plan
+```{r warning=F}
+# First line writes the Matrikelnummer
+write.table(matrikelnumber,file="plan3.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan3,file="plan3.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+### Read data
+```{r}
+dat3=read.delim("plan3_res.csv",header = T,dec=".", sep = ";")
+dat3=transform(dat3,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+head(dat3)
+```
+
+### compare machine 1 and 2 visually
+
+#### Scatterplot
+
+```{r}
+ggplot(data=dat3,mapping = aes(x=time,y=val,color=ma)) +  geom_point()
+```
+
+Data look similar.
+
+#### Density Plot
+
+```{r}
+ggplot(data=dat3,mapping = aes(x=val,color=ma)) +geom_density() + geom_rug()
+```
+
+There might be a slight larger value for machine 1.
+
+#### Box Plot
+
+```{r}
+ggplot(data=dat3,mapping = aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5) 
+```
+
+There might be a slight larger value for machine 1.
+
+#### QQ-Plot
+
+```{r}
+ggqqplot(data=dat3, x = "val", color = "ma") 
+```
+
+Both data sets look similar and normal distributed.
+
+### Statistical test
+
+#### test for normality, stationarity and outliers
+
+- Normality with Shapiro Wilk: H~0~ Distribution is normal distributed\
+- Stationary with KSPP test: H~0~ Distribution is stationary\
+- Outliers with Rosner test.\
+
+The significance level is set to  $\alpha = 0.05$
+
+```{r warning=F}
+summary_val <- dat3 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
+summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+
+- Sharpiro Wilk: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are normal distributed.\
+- KSPP: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are stationary.\
+- Also the Rosner test found no outliers.
+
+#### test if data set are the same
+
+H~0~ machines 1 and 2 are the same.\
+significance level $\alpha = 5 \%$\
+
+```{r}
+t.test(filter(dat3,ma==1)[3], filter(dat3,ma==2)[3], conf.level = 0.95)
+```
+The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The machine 1 and 2 seem to have the same performance.
+
+## Compare machine 1 and 3
+
+start with an power analysis to determine the number of experiments needed.
+
+### Calculate number of experiments
+
+```{r}
+me3=mean(filter(dat3,ma==1)$val) # calculate mean
+sd3=sd(filter(dat3,ma==1)$val) # calculate standard deviation
+dm2=me3*0.1/sd3
+nt3=ceiling(pwr.t.test(n=NULL,d=dm2, sig.level = 0.05, power = 0.95, type = "two.sample", alternative = "greater")$n)
+nt3
+```
+
+### Generate "Screening" Test plan
+```{r class.source = 'fold-show'}
+ma=c(1,3)                                                # number of machines tested
+nr=nt3                                                     # number of replicates
+plan4=expand.grid(ma)                                     # generate a base plan
+plan4=do.call("rbind", replicate(nr, plan4, simplify=F))  # replicate the base plan
+set.seed(1234)                                            # set seed for random number generator
+plan4=plan4[order(sample(1:nrow(plan4))),]                # randomize design
+plan4=as.data.frame(plan4)                                # make sure plan1 is dataframe
+names(plan4)<- c("ma")                                    # name the variables
+```
+
+### Write test plan
+```{r warning=F,class.source = 'fold-show'}
+# First line writes the Matrikelnummer
+write.table(matrikelnumber,file="plan4.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan4,file="plan4.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+### Read data
+```{r}
+dat4=read.delim("plan4_res.csv",header = T,dec=".", sep = ";")
+dat4=transform(dat4,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+head(dat4)
+```
+
+### run the comparison between machine 1 and 3
+
+### compare machine 1 and 2 visually
+
+#### Scatterplot
+
+```{r}
+ggplot(data=dat4,mapping = aes(x=time,y=val,color=ma)) +  geom_point()
+```
+
+Machine 3 looks better than machine 1.
+
+#### Density Plot
+
+```{r}
+ggplot(data=dat4,mapping = aes(x=val,color=ma)) +geom_density() + geom_rug()
+```
+
+Machine 3 looks better than machine 1.
+
+#### Box Plot
+
+```{r}
+ggplot(data=dat4,mapping = aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5) 
+```
+
+Machine 3 looks better than machine 1.\
+Machine 3 might have outliers.
+
+#### QQ-Plot
+
+```{r}
+ggqqplot(data=dat4, x = "val", color = "ma") 
+```
+
+Machine 3 might have deviations from the normal distribution.
 
 
+### Statistical test
+
+#### test for normality, stationarity and outliers
+
+- Normality with Shapiro Wilk: H~0~ Distribution is normal distributed\
+- Stationary with KSPP test: H~0~ Distribution is stationary\
+- Outliers with Rosner test.\
+
+The significance level is set to  $\alpha = 0.05$
+
+```{r warning=F}
+summary_val <- dat4 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
+summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+```
+
+- Sharpiro Wilk: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are normal distributed.\
+- KSPP: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are stationary.\
+- Also the Rosner test found no outliers.
+
+#### test if machine 3 is really better
+
+H~0~ The difference between machine 3 and 1 at least 10% of the mean of machine 1.\
+significance level $\alpha= 5 \%$\
 
 
+```{r}
+m1=mean(filter(dat4,ma==1)$val)
+m3=mean(filter(dat4,ma==3)$val)
+# mu is the anticipated difference between data sets
+t.test(x=filter(dat4,ma==3)$val,y=filter(dat4,ma==1)$val, mu=0.1*m1, alternative = "less",paired=F, conf.level = 0.95) 
+```
+The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The machine 3 has at least 10% or better performance than machine 1.\
+The relative difference is `r (m3-m1)/m1`.
+
+# Exercise 2
+
+### Generate "Screening" Test plan
+```{r class.source = 'fold-show'}
+op=seq(1,3)                                               # number of operators should be >=2 in R&R
+pa=seq(1,5)                                               # number of parts should be >=5 in R&R
+nr=3                                                      # number of replicates should be >=2 in R&R
+plan5=expand.grid(op,pa)                                  # generate a base plan
+plan5=do.call("rbind", replicate(nr, plan5, simplify=F))  # replicate the base plan
+set.seed(1234)                                            # set seed for random number generator
+plan5=plan5[order(sample(1:nrow(plan5))),]                # randomize design
+plan5=as.data.frame(plan5)                                # make sure plan1 is dataframe
+names(plan5)<- c("op","pa")                               # name the variables
+```
+
+### Write test plan
+```{r warning=F,class.source = 'fold-show'}
+# First line writes the Matrikelnummer
+write.table(matrikelnumber,file="plan5.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
+# Second line writes the test plan
+write.table(plan5,file="plan5.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
+```
+
+### Read data
+```{r}
+dat5=read.delim("plan5_res_orig.csv",header = T,dec=".", sep = ";")
+dat5=transform(dat5,op=as.factor(op))                     # transform the machine number from a numerical to a factor!
+dat5=transform(dat5,pa=as.factor(pa))                     # transform the machine number from a numerical to a factor!
+head(dat5)
+```
+
+### do an analysis of variance
+
+```{r}
+summary(aov(val~pa*op,data = dat5))
+```
+
+### do an gage R&R Analysis
+
+```{r fig.height=9}
+my.rr <- ss.rr(var = val, part = pa, appr = op, data = dat5, main = "Six Sigma Gage R&R Measure", sub = "Qualify M-Device")
+```
+
+Total Gage R&R standard deviation is below 1% and the study variation is below 9%.\
+Thus the measument system is considered acceptable.
 
 
-# NOT RUN {
-## Exercise 9.2 P. 424 from Cohen (1988)
+#############4?
+#############4?
 
 
-# }
+#############5?
+#############5?
+
+
+#############6?
+#############6?
+
 
 
 }
