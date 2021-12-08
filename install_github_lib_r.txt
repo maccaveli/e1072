@@ -1,0 +1,10 @@
+to commit:
+open git-cmd.exe and cd to e1072 folder
+git add -A
+git commit -m "Commit"
+git push -u origin master
+
+install library from github in R:
+install.packages("devtools")
+detach("package:e1072", unload = TRUE)
+devtools::install_github("maccaveli/e1072",force=T)
