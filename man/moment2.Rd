@@ -813,7 +813,7 @@ aov_model <- aov(val~pa*op,data = dat5)
 summary(aov_model)
 ```
 
-As p-values for pa and op is < alpha these factors both seem to have a significant influence on val so H~0~ is rejected. For the interaction of parts and operators the p-value is > alpha so H~0~ can't be rejected. The interaction doesn't seem to have an influence on val.
+As p-values for pa and op is < alpha these factors both seem to have a significant influence on val so H~0~ is rejected. For the interaction of parts and operators the p-value is > alpha so H~0~ cant be rejected. The interaction doesn't seem to have an influence on val.
 
 ### do an gage R&R Analysis
 
