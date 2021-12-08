@@ -76,7 +76,7 @@ names(plan1)<- c("ma")
 #alternative test plan
 plan1 <- tibble(ma = 1:7)
 #replicate 300x
-plan1 %>% slice(rep(1:n(), each = 300)) -> plan1
+#plan1 %>% slice(rep(1:n(), each = 300)) -> plan1
 #randomize row order
 set.seed(1234)
 plan1<-plan1[sample(nrow(plan1)),]
@@ -102,10 +102,10 @@ head(dat1)
 
 ## characteristic values
 {r}
-summary_val <- dat1 %>% group_by(ma)%>% summarise( mean = mean(val), median = median(val), std_dev = sd(val), MAD =mad(val), skewness=skewness(val),medcouple= mc(val), kurtosis= kurtosis(val),min=min(val),q25=quantile(val,0.25),q75=quantile(val,0.75),max=max(val))
+#summary_val <- dat1 %>% group_by(ma)%>% summarise( mean = mean(val), median = median(val), std_dev = sd(val), MAD =mad(val), skewness=skewness(val),medcouple= mc(val), kurtosis= #kurtosis(val),min=min(val),q25=quantile(val,0.25),q75=quantile(val,0.75),max=max(val))
 
-summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
-  kbl(.,"html",align = "r",caption = "Characteristic Value") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+#summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+#  kbl(.,"html",align = "r",caption = "Characteristic Value") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 
 - mean values seem to be very similar except for machine 6, the same applies for the standard deviation.\
@@ -185,9 +185,9 @@ gridExtra::grid.arrange(grobs=qqplots,ncol=2)
 The significance level is set to  $\alpha = 0.05$
 
 {r}
-summary_val <- dat1 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 20, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, family="bcPower")$lambda)
-summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
-  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+#summary_val <- dat1 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 20, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, #family="bcPower")$lambda)
+#summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+#  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 
 - normality: H~0~ has to be rejected for machine 1,2,5,6 and 7 ($p<\alpha$) and cannot be rejected for 3,4. Thus 3 and 4 could be normal distributed.\
@@ -219,7 +219,7 @@ and the other four are of the second brand (?? ? {5,6,7,8}).\
 ma <- seq(1:8)
 plan1 <- tibble(ma = ma)
 #replicate
-plan1 %>% slice(rep(1:n(), each = 100)) -> plan1
+#plan1 %>% slice(rep(1:n(), each = 100)) -> plan1
 #randomize row order
 set.seed(1234)
 plan1<-plan1[sample(nrow(plan1)),]
@@ -244,10 +244,10 @@ head(dat1)
 
 ### Characterize all machines individually with the appropriate characteristic numbers, graphs and statistical tests. (100 replications should be appropriate.)
 {r}
-summary_val <- dat1 %>% group_by(ma)%>% summarise( mean = mean(val), median = median(val), std_dev = sd(val), MAD =mad(val), skewness=skewness(val),medcouple= mc(val), kurtosis= kurtosis(val),min=min(val),q25=quantile(val,0.25),q75=quantile(val,0.75),max=max(val))
+#summary_val <- dat1 %>% group_by(ma)%>% summarise( mean = mean(val), median = median(val), std_dev = sd(val), MAD =mad(val), skewness=skewness(val),medcouple= mc(val), kurtosis= #kurtosis(val),min=min(val),q25=quantile(val,0.25),q75=quantile(val,0.75),max=max(val))
 
-summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
-  kbl(.,"html",align = "r",caption = "Characteristic Value") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+#summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+#  kbl(.,"html",align = "r",caption = "Characteristic Value") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 For all machines the mean and median seems to be about the same.\
 Standard deviation and MAD also seem to be about the same except for a slight deviation for machine 1 and 5.\
@@ -316,9 +316,9 @@ the significance level for all tests is set to alpha=5%\
 #### test for normality with shapiro-wilk-test
 
 {r}
-summary_val <- dat1 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, family="bcPower")$lambda)
-summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
-  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+#summary_val <- dat1 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, #family="bcPower")$lambda)
+#summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+#  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 for machines 1,2,3,4,8 H~0~ for normal distribution cannot be rejected. They could be normal distirbuted.\
 machine 5 is very close to alpha value -> no clear decision regarding H~0~ can be made.\
@@ -523,7 +523,7 @@ necessary number of experiments is `r nt`
 #alternative test plan
 plan2 <- tibble(ma = 1)
 #replicate
-plan2 %>% slice(rep(1:n(), each = nt)) -> plan2
+#plan2 %>% slice(rep(1:n(), each = nt)) -> plan2
 #randomize row order
 set.seed(1234)
 plan2<-plan2[sample(nrow(plan2)),]
@@ -555,8 +555,8 @@ re2
 The achieved relative error `r re2` is below the goal of 2%.\
 
 
-2.In a second run you want to verify with 95 % certainty that the second machine is having the 
-same performance allowing for a maximum deviation of 5 % error of the first machine.\
+2.In a second run you want to verify with 0.95 certainty that the second machine is having the 
+same performance allowing for a maximum deviation of 0.05 error of the first machine.\
 
 
 ## start with a power analysis to determine the number of experiments needed to compare performance of machine 1 and 2
@@ -574,7 +574,7 @@ There are `r nt2` test points for each machine needed.
 ma = seq(1:2)
 plan3 <- tibble(ma = ma)
 #replicate
-plan3 %>% slice(rep(1:n(), each = nt2)) -> plan3
+#plan3 %>% slice(rep(1:n(), each = nt2)) -> plan3
 #randomize row order
 set.seed(1234)
 plan3<-plan3[sample(nrow(plan3)),]
@@ -638,15 +638,15 @@ Machine 2 might have deviations from the normal distribution.
 signif. level is set to alpha=0.05\
 
 {r}
-summary_val <- dat3 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
-summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
-  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+#summary_val <- dat3 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
+#summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+#  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 -for both machines H~0~ for normal distribution cannot be rejected as p value is > alpha\
 -KSPP test: H~0~ cannot be rejected for both machines as p value is > alpha -> Data seems stationary\
 -both machines don't seem to have any outliers
 
-#### test if performance of machine 1 and 2 is the same with t.test with 95% certainty and 5% relative error allowed
+#### test if performance of machine 1 and 2 is the same with t.test with 0.95 certainty and 0.05 relative error allowed
 H~0~: machines 1 and 2 are the same\
 
 significance level alpha=0.05\
@@ -678,7 +678,7 @@ There are `r nt3` test points for each machine needed.
 ma = c(1,3)
 plan4 <- tibble(ma = ma)
 #replicate
-plan4 %>% slice(rep(1:n(), each = nt3)) -> plan4
+#plan4 %>% slice(rep(1:n(), each = nt3)) -> plan4
 #randomize row order
 set.seed(1234)
 plan4<-plan4[sample(nrow(plan4)),]
@@ -742,15 +742,15 @@ Both machine distributions seem normal distributed without outliers.
 signif. level is set to alpha=0.05\
 
 {r}
-summary_val <- dat4 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
-summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
-  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
+#summary_val <- dat4 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
+#summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
+#  kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 -for both machines H~0~ for normal distribution cannot be rejected as p value is > alpha\
 -KSPP test: H~0~ cannot be rejected for both machines as p value is > alpha -> Data seems stationary\
 -both machines don't seem to have any outliers
 
-#### test if performance of machine 3 is at least 10% better than machine 1 with t.test with 95% certainty
+#### test if performance of machine 3 is at least 10 perc. better than machine 1 with t.test with 95 perc. certainty
 H~0~: The difference between machine 3 and 1 at least 10% of the mean of machine 1.\
 
 significance level alpha=0.05\
@@ -821,8 +821,8 @@ As p-values for pa and op is < alpha these factors both seem to have a significa
 my.rr <- ss.rr(var = val, part = pa, appr = op, data = dat5, main = "Six Sigma Gage R&R Measure", sub = "Qualify M-Device")
 
 
-Total Gage R&R standard deviation is below 1% and the study variation is below 9%.\
-According to DOE: R&R variation of study variance < 10% and contribution variance < 1%\
+Total Gage R&R standard deviation is below 1 perc. and the study variation is below 9 perc..\
+According to DOE: R&R variation of study variance < 10 perc. and contribution variance < 1 perc.\
 Thus the measurement system is considered acceptable.
 
 
