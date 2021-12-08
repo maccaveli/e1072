@@ -48,7 +48,7 @@ moment(x, order=2, center=TRUE)
 ## Compute the 3rd absolute centered moment
 moment(x, order=3, center=TRUE, absolute=TRUE)
 
-
+# NOT RUN {
 ###########1?
 ## Generate Data
 
@@ -838,6 +838,8 @@ Thus the measurement system is considered acceptable.
 #############6?
 
 
+
+# }
 
 }
 \keyword{univar}
