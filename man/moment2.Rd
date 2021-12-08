@@ -40,7 +40,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
 \examples{
 x <- rnorm(100)
 
-## Compute the mean
+## Compute the mean test123
 moment(x)
 ## Compute the 2nd centered moment (!= var)
 moment(x, order=2, center=TRUE)
