@@ -35,8 +35,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
 \author{Kurt Hornik and Friedrich Leisch}
 \seealso{
   \code{\link{mean}},
-  \code{\link{var}}},
-  \code{\link{ftest}}}
+  \code{\link{var}}}
 \examples{
 x <- rnorm(100)
 
@@ -248,7 +247,7 @@ head(data73b)
 #Block Design
 #Incomplete Blocked Design
 bs = 2 # Block size
-gw = 4 # number of factors
+gw = 4 # number of pfactors
 bd=bibd(v=gw,k=bs)
 #Transform to Plan
 plan1=as.data.frame.model.matrix(bd)
@@ -315,30 +314,5 @@ moment(x, order=3, center=TRUE, absolute=TRUE)
 pwr.f2.test(u=5,v=89,f2=0.1/(1-0.1),sig.level=0.05)
 # }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# NOT RUN {
-## Exercise 9.2 P. 424 from Cohen (1988)
-
-
-# }
-
-
 }
 \keyword{univar}
-
-
-
