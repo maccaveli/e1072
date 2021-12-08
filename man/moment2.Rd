@@ -474,72 +474,78 @@ p-value of test is higher than alpha value -> H~0~ cannot be rejected\
 #############3?
 #############3?
 
-## Determine first machine's performance
+You have three machines (ma). Two old ones and one new one. (Use: Ex3T1.exe)\
 
-### Generate "Screening" Test plan
-```{r class.source = 'fold-show'}
-ma=seq(1)                                                 # number of machines tested
-nr=6                                                      # number of replicates
-plan1=expand.grid(ma)                                     # generate a base plan
-plan1=do.call("rbind", replicate(nr, plan1, simplify=F))  # replicate the base plan
-set.seed(1234)                                            # set seed for random number generator
-plan1=plan1[order(sample(1:nrow(plan1))),]                # randomize design
-plan1=as.data.frame(plan1)                                # make sure plan1 is dataframe
-names(plan1)<- c("ma")                                    # name the variables
+1.Determine the performance of the first machine with a relative error of less than 2 %. 
+Approach the solution in two steps and verify it.\
+
+## Screening for power analysis
+
+### create test plan for screening
+```{r}
+#alternative test plan
+plan1 <- tibble(ma = 1)
+#replicate
+plan1 %>% slice(rep(1:n(), each = 6)) -> plan1
+#randomize row order
+set.seed(1234)
+plan1<-plan1[sample(nrow(plan1)),]
+# convert to dataframe
+plan1=as.data.frame(plan1) 
 ```
 
-### Write test plan
-```{r warning=F,class.source = 'fold-show'}
-# First line writes the Matrikelnummer
+```{r}
+# save as csv
+# First line writes the MatrikelnummerQ
 write.table(matrikelnumber,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
 # Second line writes the test plan
 write.table(plan1,file="plan1.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
 ```
 
-### Read data
+## read back data
 ```{r}
 dat1=read.delim("plan1_res.csv",header = T,dec=".", sep = ";")
-dat1=transform(dat1,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+dat1=transform(dat1,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor for categorical
 head(dat1)
 ```
 
-### Calculate number of runs
+## "power analysis" for 0D distribution (measure one point of one machine wihtout varying parameter)
 ```{r}
 me1=mean(filter(dat1,ma==1)$val) # calculate mean
 sd1=sd(filter(dat1,ma==1)$val) # calculate standard deviation
-nt=ceiling((sd1/me1/0.02)^2)
+nt=ceiling((sd1/me1/0.02)^2) # round up number of experiments; 2% relative error
 ```
 
-One needs `r nt` experiments.
+necessary number of experiments is `r nt`
 
-### Generate "Screening" Test plan
-```{r class.source = 'fold-show'}
-ma=seq(1)                                                 # number of machines tested
-nr=nt                                                      # number of replicates
-plan2=expand.grid(ma)                                     # generate a base plan
-plan2=do.call("rbind", replicate(nr, plan2, simplify=F))  # replicate the base plan
-set.seed(1234)                                            # set seed for random number generator
-plan2=plan2[order(sample(1:nrow(plan2))),]                # randomize design
-plan2=as.data.frame(plan2)                                # make sure plan1 is dataframe
-names(plan2)<- c("ma")                                    # name the variables
+## test plan from power analysis
+```{r}
+#alternative test plan
+plan2 <- tibble(ma = 1)
+#replicate
+plan2 %>% slice(rep(1:n(), each = nt)) -> plan2
+#randomize row order
+set.seed(1234)
+plan2<-plan2[sample(nrow(plan2)),]
+# convert to dataframe
+plan2=as.data.frame(plan2) 
 ```
 
-### Write test plan
-```{r warning=F,class.source = 'fold-show'}
-# First line writes the Matrikelnummer
+```{r}
+# save as csv
+# First line writes the MatrikelnummerQ
 write.table(matrikelnumber,file="plan2.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
-# Second line writes the test plan
+# Second line writes th>e test plan
 write.table(plan2,file="plan2.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
 ```
-
-### Read data
+## read back data from second test with number of experiments from power analysis
 ```{r}
 dat2=read.delim("plan2_res.csv",header = T,dec=".", sep = ";")
-dat2=transform(dat2,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+dat2=transform(dat2,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor for categorical
 head(dat2)
 ```
 
-### verify the result
+### verify that relative error is <= 2%
 ```{r}
 me2=mean(filter(dat2,ma==1)$val) # calculate mean
 sd2=sd(filter(dat2,ma==1)$val) # calculate standard deviation
@@ -548,69 +554,72 @@ re2
 ```
 The achieved relative error `r re2` is below the goal of 2%.\
 
-## Compare machine 1 and 2
 
-start with an power analysis to determine the number of experiments needed.
+2.In a second run you want to verify with 95 % certainty that the second machine is having the 
+same performance allowing for a maximum deviation of 5 % error of the first machine.\
+
+
+## start with a power analysis to determine the number of experiments needed to compare performance of machine 1 and 2
 
 ```{r}
-dm=me2*0.05/sd2
+dm=me2*0.05/sd2 #effect size
 nt2=ceiling(pwr.t.test(n=NULL,d=dm, sig.level = 0.05, power = 0.95, type = "two.sample", alternative = "two.sided")$n)
 nt2
 ```
-There will `r nt2` data sets of each machine be needed.
+There are `r nt2` test points for each machine needed.
 
-### Generate "Screening" Test plan
+## create test plan with `r nt2` experiments
 ```{r}
-ma=seq(1,2)                                               # number of machines tested
-nr=nt2                                                    # number of replicates
-plan3=expand.grid(ma)                                     # generate a base plan
-plan3=do.call("rbind", replicate(nr, plan3, simplify=F))  # replicate the base plan
-set.seed(1234)                                            # set seed for random number generator
-plan3=plan3[order(sample(1:nrow(plan3))),]                # randomize design
-plan3=as.data.frame(plan3)                                # make sure plan3 is dataframe
-names(plan3)<- c("ma")                                    # name the variables
+#alternative test plan
+ma = seq(1:2)
+plan3 <- tibble(ma = ma)
+#replicate
+plan3 %>% slice(rep(1:n(), each = nt2)) -> plan3
+#randomize row order
+set.seed(1234)
+plan3<-plan3[sample(nrow(plan3)),]
+# convert to dataframe
+plan3=as.data.frame(plan3) 
 ```
 
-### Write test plan
-```{r warning=F}
+```{r}
+# save as csv
 # First line writes the Matrikelnummer
 write.table(matrikelnumber,file="plan3.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
-# Second line writes the test plan
+# Second line writes th>e test plan
 write.table(plan3,file="plan3.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
 ```
 
-### Read data
+## read back data from third test with number of experiments from power analysis
 ```{r}
 dat3=read.delim("plan3_res.csv",header = T,dec=".", sep = ";")
-dat3=transform(dat3,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+dat3=transform(dat3,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor for categorical
 head(dat3)
 ```
 
-### compare machine 1 and 2 visually
+## now compare the two machines
 
-#### Scatterplot
+### visual comparison
 
-```{r}
+#### generate scatterplot and densityplot
+
+```{r fig.height=9}
 ggplot(data=dat3,mapping = aes(x=time,y=val,color=ma)) +  geom_point()
 ```
+Data seems unsuspicious. Both machines might have some outliers. Both machines look very similar.
 
-Data look similar.
 
-#### Density Plot
-
-```{r}
+```{r fig.height=9}
 ggplot(data=dat3,mapping = aes(x=val,color=ma)) +geom_density() + geom_rug()
 ```
+Machine 2 seems to perform better than machine 1.
 
-There might be a slight larger value for machine 1.
-
-#### Box Plot
+#### Box-Notch plot
 
 ```{r}
 ggplot(data=dat3,mapping = aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5) 
 ```
-
-There might be a slight larger value for machine 1.
+Both machines might have two outlierts. Both machines perform very similar, machine 2 might perform slightly better.
 
 #### QQ-Plot
 
@@ -618,108 +627,103 @@ There might be a slight larger value for machine 1.
 ggqqplot(data=dat3, x = "val", color = "ma") 
 ```
 
-Both data sets look similar and normal distributed.
+Machine 2 might have deviations from the normal distribution.
 
-### Statistical test
+### statistical comparison of machine 1 and 2
 
-#### test for normality, stationarity and outliers
+-Test for normality with shapiro-wilk test: H~0~ distribution is normal distributed\
+-Test is distribution is stationary with KSPP test: H~0~ distribution is stationary\
+-Outliers with Rosner Test\
 
-- Normality with Shapiro Wilk: H~0~ Distribution is normal distributed\
-- Stationary with KSPP test: H~0~ Distribution is stationary\
-- Outliers with Rosner test.\
+signif. level is set to alpha=0.05\
 
-The significance level is set to  $\alpha = 0.05$
-
-```{r warning=F}
+```{r}
 summary_val <- dat3 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
 summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
   kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 ```
+-for both machines H~0~ for normal distribution cannot be rejected as p value is > alpha\
+-KSPP test: H~0~ cannot be rejected for both machines as p value is > alpha -> Data seems stationary\
+-both machines don't seem to have any outliers
 
-- Sharpiro Wilk: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are normal distributed.\
-- KSPP: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are stationary.\
-- Also the Rosner test found no outliers.
+#### test if performance of machine 1 and 2 is the same with t.test with 95% certainty and 5% relative error allowed
+H~0~: machines 1 and 2 are the same\
 
-#### test if data set are the same
-
-H~0~ machines 1 and 2 are the same.\
-significance level $\alpha = 5 \%$\
+significance level alpha=0.05\
 
 ```{r}
-t.test(filter(dat3,ma==1)[3], filter(dat3,ma==2)[3], conf.level = 0.95)
+t.test(filter(dat3,ma==1)[3],filter(dat3,ma==2)[3],alternative="two.sided",var.equals=F,conf.level=0.95)
 ```
-The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
-The machine 1 and 2 seem to have the same performance.
+p-value of 0.52 is higher than set alpha value -> machines 1 and 2 seem to perform the same
 
-## Compare machine 1 and 3
 
-start with an power analysis to determine the number of experiments needed.
 
-### Calculate number of experiments
+3.The third machine is new and is claimed to be at least 10% better than the first one. Test this 
+with 95 % certainty\
+
+## start with a power analysis to determine the number of experiments needed to compare performance of machine 1 and 3
 
 ```{r}
 me3=mean(filter(dat3,ma==1)$val) # calculate mean
 sd3=sd(filter(dat3,ma==1)$val) # calculate standard deviation
-dm2=me3*0.1/sd3
-nt3=ceiling(pwr.t.test(n=NULL,d=dm2, sig.level = 0.05, power = 0.95, type = "two.sample", alternative = "greater")$n)
+dm2=me3*0.1/sd3 #effect size
+nt3=ceiling(pwr.t.test(n=NULL,d=dm2, sig.level = 0.05, power = 0.95, type = "two.sample", alternative = "two.sided")$n)
 nt3
 ```
+There are `r nt3` test points for each machine needed.
 
-### Generate "Screening" Test plan
-```{r class.source = 'fold-show'}
-ma=c(1,3)                                                # number of machines tested
-nr=nt3                                                     # number of replicates
-plan4=expand.grid(ma)                                     # generate a base plan
-plan4=do.call("rbind", replicate(nr, plan4, simplify=F))  # replicate the base plan
-set.seed(1234)                                            # set seed for random number generator
-plan4=plan4[order(sample(1:nrow(plan4))),]                # randomize design
-plan4=as.data.frame(plan4)                                # make sure plan1 is dataframe
-names(plan4)<- c("ma")                                    # name the variables
+## create test plan with `r nt3` experiments
+```{r}
+#alternative test plan
+ma = c(1,3)
+plan4 <- tibble(ma = ma)
+#replicate
+plan4 %>% slice(rep(1:n(), each = nt3)) -> plan4
+#randomize row order
+set.seed(1234)
+plan4<-plan4[sample(nrow(plan4)),]
+# convert to dataframe
+plan4=as.data.frame(plan4) 
 ```
 
-### Write test plan
-```{r warning=F,class.source = 'fold-show'}
+```{r}
+# save as csv
 # First line writes the Matrikelnummer
 write.table(matrikelnumber,file="plan4.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
-# Second line writes the test plan
+# Second line writes th>e test plan
 write.table(plan4,file="plan4.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
 ```
 
-### Read data
+## read back data from third test with number of experiments from power analysis
 ```{r}
 dat4=read.delim("plan4_res.csv",header = T,dec=".", sep = ";")
-dat4=transform(dat4,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor!
+dat4=transform(dat4,ma=as.factor(ma))                     # transform the machine number from a numerical to a factor for categorical
 head(dat4)
 ```
 
-### run the comparison between machine 1 and 3
+## now compare the two machines
 
-### compare machine 1 and 2 visually
+### visual comparison
 
-#### Scatterplot
+#### generate scatterplot and densityplot
 
-```{r}
+```{r fig.height=9}
 ggplot(data=dat4,mapping = aes(x=time,y=val,color=ma)) +  geom_point()
 ```
+Data seems unsuspicious. Machine 3 seems to perform better than machine 1\
 
-Machine 3 looks better than machine 1.
 
-#### Density Plot
-
-```{r}
+```{r fig.height=9}
 ggplot(data=dat4,mapping = aes(x=val,color=ma)) +geom_density() + geom_rug()
 ```
+Machine 3 seems to perform better than machine 1.
 
-Machine 3 looks better than machine 1.
-
-#### Box Plot
+#### Box-Notch plot
 
 ```{r}
 ggplot(data=dat4,mapping = aes(y=val,ma)) + geom_boxplot(notch = TRUE, notchwidth = .5) 
 ```
-
-Machine 3 looks better than machine 1.\
-Machine 3 might have outliers.
+machine 3 seems to perform better than machine 1.
 
 #### QQ-Plot
 
@@ -727,52 +731,55 @@ Machine 3 might have outliers.
 ggqqplot(data=dat4, x = "val", color = "ma") 
 ```
 
-Machine 3 might have deviations from the normal distribution.
+Both machine distributions seem normal distributed without outliers.
 
+### statistical comparison of machine 1 and 3
 
-### Statistical test
+-Test for normality with shapiro-wilk test: H~0~ distribution is normal distributed\
+-Test is distribution is stationary with KSPP test: H~0~ distribution is stationary\
+-Outliers with Rosner Test\
 
-#### test for normality, stationarity and outliers
+signif. level is set to alpha=0.05\
 
-- Normality with Shapiro Wilk: H~0~ Distribution is normal distributed\
-- Stationary with KSPP test: H~0~ Distribution is stationary\
-- Outliers with Rosner test.\
-
-The significance level is set to  $\alpha = 0.05$
-
-```{r warning=F}
+```{r}
 summary_val <- dat4 %>% group_by(ma)%>% summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 3, alpha = 0.05, warn = F)$n.outliers)
 summary_val %>% mutate_if(is.numeric, format, digits=3,nsmall = 1) %>%
   kbl(.,"html",align = "r",caption = "Statistical Test Results") %>%   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 ```
+-for both machines H~0~ for normal distribution cannot be rejected as p value is > alpha\
+-KSPP test: H~0~ cannot be rejected for both machines as p value is > alpha -> Data seems stationary\
+-both machines don't seem to have any outliers
 
-- Sharpiro Wilk: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are normal distributed.\
-- KSPP: $p>\alpha \forall$ machines $\therefore$ H~0~ cannot be rejected. Thus we assume the data sets are stationary.\
-- Also the Rosner test found no outliers.
+#### test if performance of machine 3 is at least 10% better than machine 1 with t.test with 95% certainty
+H~0~: The difference between machine 3 and 1 at least 10% of the mean of machine 1.\
 
-#### test if machine 3 is really better
-
-H~0~ The difference between machine 3 and 1 at least 10% of the mean of machine 1.\
-significance level $\alpha= 5 \%$\
-
+significance level alpha=0.05\
 
 ```{r}
 m1=mean(filter(dat4,ma==1)$val)
 m3=mean(filter(dat4,ma==3)$val)
-# mu is the anticipated difference between data sets
-t.test(x=filter(dat4,ma==3)$val,y=filter(dat4,ma==1)$val, mu=0.1*m1, alternative = "less",paired=F, conf.level = 0.95) 
+# mu is the anticipated difference between data sets, REIHENFOLGE DER MASCHINEN SPIELT EINE ROLLE
+t.test(filter(dat4,ma==3)[3],filter(dat4,ma==1)[3],mu=0.1*m1,alternative="less",var.equals=F,conf.level=0.95)
 ```
-The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
-The machine 3 has at least 10% or better performance than machine 1.\
-The relative difference is `r (m3-m1)/m1`.
+p-value of near 1 is much higher than set alpha value -> machine 3 seems to perform at least 10% better than machine 1
+
+
 
 # Exercise 2
 
-### Generate "Screening" Test plan
-```{r class.source = 'fold-show'}
-op=seq(1,3)                                               # number of operators should be >=2 in R&R
-pa=seq(1,5)                                               # number of parts should be >=5 in R&R
-nr=3                                                      # number of replicates should be >=2 in R&R
+You have a new measurement device which you want to quality following the gage R&R analysis
+together with two colleagues. (Use: Ex3T2.exe)\
+
+1. Set up a test plan for doing the gage R&R.\
+
+2. Evaluate the result. Is the measurement system acceptable\
+
+## Generate test plan with operators and parts
+
+```{r}
+op=seq(1,3)                                               # number of operators
+pa=seq(1,5)                                               # number of parts
+nr=3                                                      # number of replicates
 plan5=expand.grid(op,pa)                                  # generate a base plan
 plan5=do.call("rbind", replicate(nr, plan5, simplify=F))  # replicate the base plan
 set.seed(1234)                                            # set seed for random number generator
@@ -781,27 +788,32 @@ plan5=as.data.frame(plan5)                                # make sure plan1 is d
 names(plan5)<- c("op","pa")                               # name the variables
 ```
 
-### Write test plan
-```{r warning=F,class.source = 'fold-show'}
-# First line writes the Matrikelnummer
+```{r}
+# save as csv
+# First line writes the MatrikelnummerQ
 write.table(matrikelnumber,file="plan5.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
 # Second line writes the test plan
 write.table(plan5,file="plan5.csv",sep = ";", dec = ".",row.names = F, col.names = T, append = T)
 ```
 
-### Read data
+## read test plan with results
 ```{r}
-dat5=read.delim("plan5_res_orig.csv",header = T,dec=".", sep = ";")
-dat5=transform(dat5,op=as.factor(op))                     # transform the machine number from a numerical to a factor!
-dat5=transform(dat5,pa=as.factor(pa))                     # transform the machine number from a numerical to a factor!
+dat5=read.delim("plan5_res.csv",header = T,dec=".", sep = ";")
+dat5=transform(dat5,op=as.factor(op),pa=as.factor(pa))                     # transform the machine number from a numerical to a factor for categorical
 head(dat5)
 ```
 
-### do an analysis of variance
+### do an analysis of variance (linear regression model) to test the effect of operator and parts on val
+
+H~0~: parts and operators don't have an influence on val
 
 ```{r}
-summary(aov(val~pa*op,data = dat5))
+aov_model <- aov(val~pa*op,data = dat5)
+#aov_model$coefficients
+summary(aov_model)
 ```
+
+As p-values for pa and op is < alpha these factors both seem to have a significant influence on val so H~0~ is rejected. For the interaction of parts and operators the p-value is > alpha so H~0~ can't be rejected. The interaction doesn't seem to have an influence on val.
 
 ### do an gage R&R Analysis
 
@@ -810,7 +822,8 @@ my.rr <- ss.rr(var = val, part = pa, appr = op, data = dat5, main = "Six Sigma G
 ```
 
 Total Gage R&R standard deviation is below 1% and the study variation is below 9%.\
-Thus the measument system is considered acceptable.
+According to DOE: R&R variation of study variance < 10% and contribution variance < 1%\
+Thus the measurement system is considered acceptable.
 
 
 #############4?
