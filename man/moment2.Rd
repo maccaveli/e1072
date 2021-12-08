@@ -486,7 +486,7 @@ Approach the solution in two steps and verify it.\
 #alternative test plan
 plan1 <- tibble(ma = 1)
 #replicate
-plan1 %>% slice(rep(1:n(), each = 6)) -> plan1
+#plan1 %>% slice(rep(1:n(), each = 6)) -> plan1
 #randomize row order
 set.seed(1234)
 plan1<-plan1[sample(nrow(plan1)),]
