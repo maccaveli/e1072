@@ -182,7 +182,7 @@ gridExtra::grid.arrange(grobs=qqplots,ncol=2)
 - Stationary with KSPP test: H~0~ Distribution is stationary\
 - Outliers with Rosner test.\
 
-The significance level is set to  $\alpha = 0.05$
+The significance level is set to  $alpha = 0.05$
 
 {r}
 summary_val <- dat1  proz > proz  group_by(ma) proz > proz  summarise( shapiro_p = shapiro.test(val)$p.value, kspp_p=kpss.test(val)$p.value,n_outlier=rosnerTest(val, k = 20, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(val, family="bcPower")$lambda)
@@ -190,8 +190,8 @@ summary_val  proz > proz  mutate_if(is.numeric, format, digits=3,nsmall = 1)  pr
   kbl(.,"html",align = "r",caption = "Statistical Test Results")  proz > proz    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 
 
-- normality: H~0~ has to be rejected for machine 1,2,5,6 and 7 ($p<\alpha$) and cannot be rejected for 3,4. Thus 3 and 4 could be normal distributed.\
-- stationary: H~0~ has to be rejected for machine 4 ($p<\alpha$) and cannot be rejected for the rest. Thus all machines except for machine 4 could be stationary.\
+- normality: H~0~ has to be rejected for machine 1,2,5,6 and 7 ($p<alpha$) and cannot be rejected for 3,4. Thus 3 and 4 could be normal distributed.\
+- stationary: H~0~ has to be rejected for machine 4 ($p<alpha$) and cannot be rejected for the rest. Thus all machines except for machine 4 could be stationary.\
 - outliers: Machines 1, 5, 6, 7 seem to have outliers\
 - box cox: necessary power for transformation is about -2.1 for machine 1, -0.77 for machine  5, 0.55 for machine 6. and 3.2 for machine 7.
 
@@ -352,7 +352,7 @@ ggplot(data=filter(dat1,ma==1 | ma==2),mapping = aes(x=val,color=ma)) + geom_den
 ##### hypothesis test
 
 H~0~ machines 1 and 2 have the same variance.\
-significance level $\alpha=5\ proz "\
+significance level $alpha=5\ proz "\
 
 {r}
 var.test(unlist(filter(dat1,ma==1)[3]), unlist(filter(dat1,ma==2)[3]))
@@ -360,17 +360,17 @@ var.test(unlist(filter(dat1,ma==1)[3]), unlist(filter(dat1,ma==2)[3]))
 
 
 
-The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The p-value is above $alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
 The machine 1 and 2 seem to have the same variance.
 
 H~0~ machines 1 and 2 are the same.\
-significance level $\alpha=5\ proz "\
+significance level $alpha=5\ proz "\
 
 {r}
 t.test(filter(dat1,ma==1)[3], filter(dat1,ma==2)[3], conf.level = 0.95,var.equal =T)
 
 
-The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The p-value is above $alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
 The machine 1 and 2 seem to have the same performance.
 
 Alternative the Welch-Test
@@ -382,7 +382,7 @@ significance level alpha=5 proz \
 t.test(filter(dat1,ma==1)[3], filter(dat1,ma==2)[3], conf.level = 0.95,var.equal =F)
 
 
-The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The p-value is above $alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
 The machine 1 and 2 seem to have the same performance.
 
 
@@ -427,7 +427,7 @@ there seems to be a slight difference in performance, though the standard deviat
 test variance for further analysis (3 data sets can be tested for the same variance with the bartlett test)
 
 H~0~ machines 1 to 3 have the same variance.\
-significance level $\alpha=5\ proz "\
+significance level $alpha=5\ proz "\
 
 {r}
 dat1s2=filter(dat1,ma==1 | ma==2| ma==3)
@@ -845,7 +845,7 @@ cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
 
 The target is to have a low roughness (ra). For the current process parameter, it is claimed to achieve 
-2 µm.
+2 \B5m.
 You will be asked to write down several plans in the following. These plans have all the same 
 structure. The file starts with the Matrikelnumber. This row is followed by a row with the column 
 names: ma, ts. In the following rows follows the plan with the levels. There are always 2 columns.
@@ -999,7 +999,7 @@ Kurtosis is -1.7 so a flat distribution is expected.\
 - Stationary with KSPP test: H~0~ Distribution is stationary\
 - Outliers with Rosner test.\
 
-The significance level is set to  $\alpha = 0.05$
+The significance level is set to  $alpha = 0.05$
 
 ```{r}
 summary_val <- dat2  perc. > perc.  group_by(ma)  perc. > perc.  summarise(shapiro_p = shapiro.test(ra)$p.value, kspp_p=kpss.test(ra)$p.value, n_outlier=rosnerTest(ra, k = 20, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(ra, family="bcPower")$lambda)
@@ -1096,7 +1096,7 @@ Data are normal distributed. There don't seem to be any outliers.
 - Stationary with KSPP test: H~0~ Distribution is stationary\
 - Outliers with Rosner test.\
 
-The significance level is set to  $\alpha = 0.05$
+The significance level is set to  $alpha = 0.05$
 
 ```{r}
 summary_val <- dat3  perc. > perc.  group_by(ma)  perc. > perc.  summarise(shapiro_p = shapiro.test(ra)$p.value, kspp_p=kpss.test(ra)$p.value, n_outlier=rosnerTest(ra, k = 20, alpha = 0.05, warn = F)$n.outliers,Box_Cox_lamda=powerTransform(ra, family="bcPower")$lambda)
@@ -1120,7 +1120,7 @@ significance level alpha=0.05 \
 t.test(filter(dat3,ma==1)[4], filter(dat3,ma==2)[4], conf.level = 0.95,var.equal =F)
 ```
 
-The p-value is above $\alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
+The p-value is above $alpha$ $\Rightarrow$ H~0~ cannot be rejected.\
 The machine 1 and 2 seem to achieve the same roughness.
 
 
@@ -1167,13 +1167,13 @@ ggplot(data=dat4,mapping = aes(x=time,y=ra,color=ma)) +  geom_point() + scale_co
 There seems to be no time drift.
 
 H~0~ data is stationary\
-$\alpha = 5\ perc. $
+$alpha = 5\ perc. $
 
 ```{r}
 kpss.test(dat4$ra)
 ```
 
-$p>\alpha \therefore H_0$ cannot be rejected. Thus data can be assumed to be stationary.
+$p>alpha \therefore H_0$ cannot be rejected. Thus data can be assumed to be stationary.
 
 ```{r}
 ggplot(data=dat4,mapping = aes(x=ts,y=ra,color=ma)) +  geom_point() + scale_color_manual("Machines",values=c("red", "blue", "green"))
@@ -1187,13 +1187,13 @@ There seems to be a turnings speed dependence.
 
 ### Do a first model for power analysis.\
 H~0~ There is no ts dependence.\
-$\alpha = 5\ perc. $
+$alpha = 5\ perc. $
 ```{r}
 mod1<-lm(ra~ts,data = dat4)
 summary(mod1)
 ```
 
-$p<\alpha for both intercept and ts \therefore H_0$ has to be rejected. Thus doing a linear model is reasonable.
+$p<alpha for both intercept and ts \therefore H_0$ has to be rejected. Thus doing a linear model is reasonable.
 
 ### Do a power analysis.
 
@@ -1241,13 +1241,13 @@ head(dat5)
 ### Generate linear regression model with new results
 
 H~0~ There is no ts dependence.\
-$\alpha = 5\ perc. $
+$alpha = 5\ perc. $
 ```{r}
 mod2<-lm(ra~ts,data = dat5)
 summary(mod2)
 ```
 
-$p<\alpha for both intercept and ts \therefore H_0$ has to be rejected. Thus doing a linear model is reasonable.
+$p<alpha for both intercept and ts \therefore H_0$ has to be rejected. Thus doing a linear model is reasonable.
 
 
 #### Visualize the result
@@ -1273,12 +1273,12 @@ Residuals seem to be normal distributed. There seem to be some outliers.
 
 do a shapiro-wilk test on the residuals.
 H~0~ Data are normal distributed.\
-significance level: $\alpha=5\ perc. $
+significance level: $alpha=5\ perc. $
 
 ```{r}
 shapiro.test(mod2$residuals)
 ```
-$p>\alpha \therefore H_0$ cannot be rejected.\
+$p>alpha \therefore H_0$ cannot be rejected.\
 Thus the data a normal distributed.\
 
 ##### Test the homogeneity of the residuals (Homoscedasticity)\
@@ -1290,12 +1290,12 @@ spreadLevelPlot(mod2)
 The residuals look like they might be homogeneous.
 
 > H~0~ residuals are homogeneous distributed\
-significance level: $\alpha=5\ perc. $
+significance level: $alpha=5\ perc. $
 
 ```{r}
 ncvTest(mod2)
 ```
-$p>\alpha \therefore H_0$ can't be rejected.\
+$p>alpha \therefore H_0$ can't be rejected.\
 Thus the residuals seem to be homogeneous.\
 
 ##### Look for high leverage points outliers
@@ -1324,13 +1324,13 @@ acf(mod2$residuals)
 There might be slight autocorrelation (periodicity).
 
 > H~0~ residuals are not autocorrelated\
-significance level: $\alpha=5\ perc. $
+significance level: $alpha=5\ perc. $
 
 ```{r}
 durbinWatsonTest(mod2)
 ```
 
-$p>\alpha \therefore H_0$ cannot be rejected.\
+$p>alpha \therefore H_0$ cannot be rejected.\
 Thus the residuals don't seem to be autocorrelated.
 
 ##### Testing for Multicollinearity
@@ -1384,7 +1384,7 @@ Results look similar.
 
 H~01~ There is no ts dependence.\
 H~02~ There is no machine dependence.\
-$\alpha = 5\ perc. $
+$alpha = 5\ perc. $
 ```{r}
 mod3<-lm(ra~ma*ts,data = dat6)
 summary(mod3)
@@ -1396,7 +1396,7 @@ There seems to be no machine dependence. Only intercept and ts seem to have an i
 ### Do a reduced model 
 
 H~01~ There is no ts dependence.\
-$\alpha = 5\ perc. $
+$alpha = 5\ perc. $
 ```{r}
 mod3r<-lm(ra~ts,data = dat6)
 summary(mod3r)
@@ -1412,13 +1412,13 @@ ggplot(data=dat6,mapping = aes(x=ts,y=ra,color=ma)) +  geom_point()+  geom_smoot
 ### Compare the two models
 
 H~0~ full model and reduced model have the same quality.\
-$\alpha = 5\ perc. $
+$alpha = 5\ perc. $
 
 ```{r}
 anova(mod3r,mod3)
 ```
 
-$p>\alpha \therefore H_0$ cannot be rejected.\
+$p>alpha \therefore H_0$ cannot be rejected.\
 The reduced model seems to capture the characteristic of the dataset as well as the full model.
 
 #############5?
