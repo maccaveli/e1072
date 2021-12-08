@@ -1,4 +1,4 @@
-moment <- function(x, order = 1, center = FALSE, absolute = FALSE,
+moment2 <- function(x, order = 1, center = FALSE, absolute = FALSE,
                    na.rm = FALSE) {
   if (na.rm)
     x <- x[!is.na(x)]

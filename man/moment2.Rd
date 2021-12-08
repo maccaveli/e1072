@@ -1,5 +1,5 @@
-\name{moment}
-\alias{moment}
+\name{moment2}
+\alias{moment2}
 \title{Statistical Moment}
 \description{
   Computes the (optionally centered and/or absolute) sample moment of a
