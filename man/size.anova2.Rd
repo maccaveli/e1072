@@ -1,5 +1,5 @@
-\name{size.anova}
-\alias{size.anova}
+\name{size.anova2}
+\alias{size.anova2}
 \title{
 Design of Experiments for ANOVA
 }
