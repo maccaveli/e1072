@@ -1403,12 +1403,6 @@ summary(mod3r)
 ```
 
 
-
-```{r}
-ggplot(data=dat6,mapping = aes(x=ts,y=ra,color=ma)) +  geom_point()+  geom_smooth(method=lm, formula= y~x, se=T)  + scale_color_manual("Machines",values=c("red", "blue", "green")) +   stat_regline_equation(aes(label =  paste(..eq.label.., ..adj.rr.label.., sep = "~~~~")), label.x = 7500) 
-```
-
-
 ### Compare the two models
 
 H~0~ full model and reduced model have the same quality.\
