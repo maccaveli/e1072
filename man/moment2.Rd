@@ -21,7 +21,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
    should be stripped before the computation proceeds.}
  \item{n}{a numeric vector containing the values whose moment is to be
    computed.}
- \item{d}{Effect size (Cohen's d) - difference between the means divided by the pooled standard deviation}
+ \item{d}{Effect size (Cohens d) - difference between the means divided by the pooled standard deviation}
  \item{sig.level}{a logical value indicating whether centered moments are
    to be computed.}
  \item{power}{Power of test (1 minus Type II error probability)}
@@ -30,7 +30,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
 }
 \details{
   When \code{center} and \code{absolute} are both \code{FALSE}, the
-  moment is simply \code{sum(x ^ order) length(x) Exactly one of the parameters 'u','v','f2','power' and 'sig.level' must be passed as NULL, and that parameter is determined from the others. Notice that the last one has non-NULL default so NULL must be explicitly passed if you want to compute it.}.
+  moment is simply \code{sum(x ^ order) length(x) Exactly one of the parameters u,v,f2,power and sig.level must be passed as NULL, and that parameter is determined from the others. Notice that the last one has non-NULL default so NULL must be explicitly passed if you want to compute it.}.
 }
 \author{Kurt Hornik and Friedrich Leisch}
 \seealso{
@@ -322,7 +322,7 @@ summary_val  proz > proz  mutate_if(is.numeric, format, digits=3,nsmall = 1)  pr
 
 for machines 1,2,3,4,8 H~0~ for normal distribution cannot be rejected. They could be normal distirbuted.\
 machine 5 is very close to alpha value -> no clear decision regarding H~0~ can be made.\
-for machines 6 and 7 H~0~ can be rejected they don't seem to be normal distributed\
+for machines 6 and 7 H~0~ can be rejected they dont seem to be normal distributed\
 \
 all distributions seem to stationary as p-value of KSPP is above alpha.\
 \
@@ -445,7 +445,7 @@ res.aov<-aov(val~ma,data = dat1s2)
 summary(res.aov)
 
 p-value of 0.00778 is below alpha value -> H~0~ rejected\
--> machines don't seem to perform the same\
+-> machines dont seem to perform the same\
 
 
 ### Do machines 5 to 7 have the same performance?
@@ -644,7 +644,7 @@ summary_val  proz > proz  mutate_if(is.numeric, format, digits=3,nsmall = 1)  pr
 
 -for both machines H~0~ for normal distribution cannot be rejected as p value is > alpha\
 -KSPP test: H~0~ cannot be rejected for both machines as p value is > alpha -> Data seems stationary\
--both machines don't seem to have any outliers
+-both machines dont seem to have any outliers
 
 #### test if performance of machine 1 and 2 is the same with t.test with 95 proz  certainty and 5 proz  relative error allowed
 H~0~: machines 1 and 2 are the same\
@@ -748,7 +748,7 @@ summary_val  proz > proz  mutate_if(is.numeric, format, digits=3,nsmall = 1)  pr
 
 -for both machines H~0~ for normal distribution cannot be rejected as p value is > alpha\
 -KSPP test: H~0~ cannot be rejected for both machines as p value is > alpha -> Data seems stationary\
--both machines don't seem to have any outliers
+-both machines dont seem to have any outliers
 
 #### test if performance of machine 3 is at least 10 proz  better than machine 1 with t.test with 95 proz  certainty
 H~0~: The difference between machine 3 and 1 at least 10 proz  of the mean of machine 1.\
@@ -805,7 +805,7 @@ head(dat5)
 
 ### do an analysis of variance (linear regression model) to test the effect of operator and parts on val
 
-H~0~: parts and operators don't have an influence on val
+H~0~: parts and operators dont have an influence on val
 
 {r}
 aov_model <- aov(val~pa*op,data = dat5)
@@ -813,7 +813,7 @@ aov_model <- aov(val~pa*op,data = dat5)
 summary(aov_model)
 
 
-As p-values for pa and op is < alpha these factors both seem to have a significant influence on val so H~0~ is rejected. For the interaction of parts and operators the p-value is > alpha so H~0~ cant be rejected. The interaction doesn't seem to have an influence on val.
+As p-values for pa and op is < alpha these factors both seem to have a significant influence on val so H~0~ is rejected. For the interaction of parts and operators the p-value is > alpha so H~0~ cant be rejected. The interaction doesnt seem to have an influence on val.
 
 ### do an gage R&R Analysis
 
@@ -1007,9 +1007,9 @@ summary_val   perc. > perc.   mutate_if(is.numeric, format, digits=3,nsmall = 1)
   kbl(.,"html",align = "r",caption = "Statistical Test Results")  perc. > perc.  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 ```
 
-- normality: H~0~ can't be rejected as p-value is > alpha value -> distribution seems to be normal\
-- stationary: H~0~ can't be rejected as p-value is > alpha value -> distribution seems to be stationary\
-- outliers: the machine doesn't seem to have any outliers\
+- normality: H~0~ cant be rejected as p-value is > alpha value -> distribution seems to be normal\
+- stationary: H~0~ cant be rejected as p-value is > alpha value -> distribution seems to be stationary\
+- outliers: the machine doesnt seem to have any outliers\
 - box cox: necessary power for transformation is about 1.57 for machine 1.\
 
 
@@ -1021,7 +1021,7 @@ t.test(filter(dat2,ma==1)[4],mu=2,alternative="greater",var.equals=F,conf.level=
 
 ```
 
-H~0~ can't be rejected. p-value of near 1 is much higher than set alpha value -> machine 1 seems to perform better than 2 micrometers of roughness.
+H~0~ cant be rejected. p-value of near 1 is much higher than set alpha value -> machine 1 seems to perform better than 2 micrometers of roughness.
 
 4. Then you compare the performance of the second machine with the first one at the current 
 process parameter.\
@@ -1029,7 +1029,7 @@ process parameter.\
 ## compare the performance of machine 1 and machine 2 by first screening both machines with previously calculated necessary number of experiments
 
 ### Generate "Screening" Test plan
-```{r class.source = 'fold-show'}
+```{r class.source = fold-show}
 ma=seq(1,2)                                               # number of machines tested
 ts=c(7500)                                                # turning speed numbers
 nr=nt                                                     # number of replicates
@@ -1043,7 +1043,7 @@ names(plan3)<- c("ma","ts")                               # name the variables
 
 
 ### Write test plan
-```{r warning=F,class.source = 'fold-show'}
+```{r warning=F,class.source = fold-show}
 # First line writes the Matrikelnummer
 write.table(matrikelnumber,file="plan3.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
 # Second line writes the test plan
@@ -1087,7 +1087,7 @@ There might be outliers for machine 2. Performance of both machines could be the
 ggqqplot(data=dat3, x = "ra", color = "ma") + scale_color_manual(values=c("red", "blue", "green"))
 ```
 
-Data are normal distributed. There don't seem to be any outliers.
+Data are normal distributed. There dont seem to be any outliers.
 
 ### do hypothesis tests on both machines
 
@@ -1104,9 +1104,9 @@ summary_val   perc. > perc.   mutate_if(is.numeric, format, digits=3,nsmall = 1)
   kbl(.,"html",align = "r",caption = "Statistical Test Results")  perc. > perc.  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) 
 ```
 
-- normality: H~0~ can't be rejected for both machines as p-value is > alpha value -> distribution seems to be normal\
-- stationary: H~0~ can't be rejected for both machines as p-value is > alpha value -> distribution seems to be stationary\
-- outliers: the machines don't seem to have any outliers\
+- normality: H~0~ cant be rejected for both machines as p-value is > alpha value -> distribution seems to be normal\
+- stationary: H~0~ cant be rejected for both machines as p-value is > alpha value -> distribution seems to be stationary\
+- outliers: the machines dont seem to have any outliers\
 - box cox: necessary power for transformation is about 1.84 for machine 1 and 0.275 for machine 2.\
 
 
@@ -1130,7 +1130,7 @@ to have the model with a power of 99 perc.  and a significance level of 1  perc.
 
 ## first generate screening plan with 2 points (linear) for machine 1
 ### Generate "Screening" Test plan
-```{r class.source = 'fold-show'}
+```{r class.source = fold-show}
 ma=seq(1)                                                 # number of machines tested
 ts=c(5000,10000)                                                # turning speed numbers
 nr=6                                                     # number of replicates
@@ -1144,7 +1144,7 @@ names(plan4)<- c("ma","ts")                               # name the variables
 
 
 ### Write test plan
-```{r warning=F,class.source = 'fold-show'}
+```{r warning=F,class.source = fold-show}
 # First line writes the Matrikelnummer
 write.table(matrikelnumber,file="plan4.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
 # Second line writes the test plan
@@ -1211,7 +1211,7 @@ For each level `r n2` experiments should be run.
 
 
 #### generate  plan for linear regression with previously estimated number of necessary experiments for each level
-```{r class.source = 'fold-show'}
+```{r class.source = fold-show}
 ma=seq(1)                                                 # number of machines tested
 ts=c(5000,10000)                                          # turning speed numbers
 nr=ceiling(n2/2)                                          # number of replicates for each level (2 levels -> divide by 2)
@@ -1225,7 +1225,7 @@ names(plan5)<- c("ma","ts")                               # name the variables
 
 
 ### Write test plan
-```{r warning=F,class.source = 'fold-show'}
+```{r warning=F,class.source = fold-show}
 # First line writes the Matrikelnummer
 write.table(matrikelnumber,file="plan5.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
 # Second line writes the test plan
@@ -1295,7 +1295,7 @@ significance level: $alpha=5\ perc. $
 ```{r}
 ncvTest(mod2)
 ```
-$p>alpha \therefore H_0$ can't be rejected.\
+$p>alpha \therefore H_0$ cant be rejected.\
 Thus the residuals seem to be homogeneous.\
 
 ##### Look for high leverage points outliers
@@ -1331,7 +1331,7 @@ durbinWatsonTest(mod2)
 ```
 
 $p>alpha \therefore H_0$ cannot be rejected.\
-Thus the residuals don't seem to be autocorrelated.
+Thus the residuals dont seem to be autocorrelated.
 
 ##### Testing for Multicollinearity
 
@@ -1344,7 +1344,7 @@ Testing multicollinearity here makes no sense, because there is only one factor.
 ## Compare the two machines with linear regression models for both machines
 
 ### generate screening plan
-```{r class.source = 'fold-show'}
+```{r class.source = fold-show}
 ma=seq(1,2)                                               # number of machines tested
 ts=c(5000,10000)                                          # turning speed numbers
 nr=n2                                                     # number of replicates
@@ -1358,7 +1358,7 @@ names(plan6)<- c("ma","ts")                               # name the variables
 
 
 ### Write test plan
-```{r warning=F,class.source = 'fold-show'}
+```{r warning=F,class.source = fold-show}
 # First line writes the Matrikelnummer
 write.table(matrikelnumber,file="plan6.csv",sep = ";", dec = ".",row.names = F, col.names = F, append = F)
 # Second line writes the test plan
@@ -1390,7 +1390,7 @@ mod3<-lm(ra~ma*ts,data = dat6)
 summary(mod3)
 ```
 
-There seems to be no machine dependence. Only intercept and ts seem to have an influence on ra. The interaction between machine 2 and ts doesn't seem to matter either.
+There seems to be no machine dependence. Only intercept and ts seem to have an influence on ra. The interaction between machine 2 and ts doesnt seem to matter either.
 
 
 ### Do a reduced model 
