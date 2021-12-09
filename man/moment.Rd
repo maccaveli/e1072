@@ -21,7 +21,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
    should be stripped before the computation proceeds.}
  \item{n}{a numeric vector containing the values whose moment is to be
    computed.}
- \item{d}{Effect size (Cohen's d) - difference between the means divided by the pooled standard deviation}
+ \item{d}{Effect size (Cohens d) - difference between the means divided by the pooled standard deviation}
  \item{sig.level}{a logical value indicating whether centered moments are
    to be computed.}
  \item{power}{Power of test (1 minus Type II error probability)}
@@ -30,7 +30,7 @@ moment(x, order=1, center=FALSE, absolute=FALSE, na.rm=FALSE)
 }
 \details{
   When \code{center} and \code{absolute} are both \code{FALSE}, the
-  moment is simply \code{sum(x ^ order) length(x) Exactly one of the parameters 'u','v','f2','power' and 'sig.level' must be passed as NULL, and that parameter is determined from the others. Notice that the last one has non-NULL default so NULL must be explicitly passed if you want to compute it.}.
+  moment is simply \code{sum(x ^ order) length(x) Exactly one of the parameters u,v,f2,power and sig.level must be passed as NULL, and that parameter is determined from the others. Notice that the last one has non-NULL default so NULL must be explicitly passed if you want to compute it.}.
 }
 \author{Kurt Hornik and Friedrich Leisch}
 \seealso{
@@ -85,7 +85,7 @@ apply(data,2,function(x){sum(is.na(x))})
 plot(data,main = "Data", xlab = "data",ylab = "value")
 
 plot(density(data),main = "Data",xlab = "value",ylab = "density",lwd = 2)
-lines(seq(min(data),max(data),0.01),dnorm(seq(min(data),max(data),0.01),mean = mean(data),sd=sd(data)),col="blue",lwd = 2,lty = 'dotted')
+lines(seq(min(data),max(data),0.01),dnorm(seq(min(data),max(data),0.01),mean = mean(data),sd=sd(data)),col="blue",lwd = 2,lty = dotted)
 
 boxplot(data,main = "Data",ylab = "values",notch = T)
 
@@ -285,7 +285,7 @@ n=(SD(data)/(rel_error*mean(Data)))^2
 rel_error=SD(data)/mean(data)/sqrt(nrow(data))
 
 #delta m
-np=size.t.test(type = 'one.sample', power = .95,delta=mean_old*0.2, sd=sd_old , sig.level=.05,alternative = "one.sided")
+np=size.t.test(type = one.sample, power = .95,delta=mean_old*0.2, sd=sd_old , sig.level=.05,alternative = "one.sided")
 #diff in variance with factor/ratio 2 betw variances
 n=size.comparing.variances(ratio=(0.1/0.05)^2,alpha=0.05,power=0.95)
 
