@@ -48,7 +48,7 @@ moment(x, order=2, center=TRUE)
 ## Compute the 3rd absolute centered moment
 moment(x, order=3, center=TRUE, absolute=TRUE)
 
-# NOT RUN {
+\dontrun{
 ###########1?TEST123123
 ## Generate Data
 
@@ -1424,7 +1424,7 @@ The reduced model seems to capture the characteristic of the dataset as well as 
 
 
 
-# }
+}
 
 }
 \keyword{univar}
