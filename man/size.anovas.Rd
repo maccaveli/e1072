@@ -588,9 +588,45 @@ size.anova(model="(axb)>c", hypothesis="a",a=6, b=5, c=4,
 
 
 
+Def:
+confidence interval - a range of values so defined that there is a specified probability that the value of a parameter lies within it
+
+confounding/aliasing:
+Aliasing occurs in fract. fact. designs because the design does not include all of the combinations of factor levels.
+For example, if factor A is confounded with the 3-way interaction BCD, then the estimated effect for A is the sum
+of the effect of A and the effect of BCD. You cannot determine whether a significant effect is because of A,
+because of BCD, or because of a combination of both
+
+resolution - tells you how badly the design is confounded. Decides over ability to separate main effects and interactions from one another, low resolution leads to aliasing of factors/interactions.
+
+fixed/random factor: 
+Two basic types of factors exist in the analysis of experiments: fixed and random.
+Unlike a fixed factor, in which all levels of interest have been measured,
+a random factor is one for which only a selection of all possible levels of a factor has been measured for analysis
+
+res:
+3: no interactions estimable, main effects confounded with two-way-ia
+4: 2-way interactions aliased with each other -> no interactions estimable, better than res. 3 for main effects
+5: three-way-ias confounded with two-way-ias
 
 
 
+
+
+
+Typical approach in DoE
+1. Recognition of the problem
+2. Selection of the response variable (What do we want to
+measure? And how will we do this?) (dependent variable)
+3. Choice of factors, levels and ranges (What do we want to alter
+in the experiments in which steps over which range?)
+(independent variable)
+4. Choice of experimental design
+5. Running experiments
+6. Statistical analysis of the collected data
+7. Conclusion
+8. Confirmation with repeated experiments
+9. Recommendations
 
 
 
